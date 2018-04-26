@@ -16,6 +16,7 @@ func TestLargestHourGlassSum(t *testing.T) {
 	}
 	for _, tc := range []testCase{
 		{`19.txt`, 19},
+		{`minus.txt`, -6},
 	} {
 		t.Run(fmt.Sprintf("test%+v", tc.in), func(t *testing.T) { // https://youtu.be/hVFEV-ieeew?t=1037
 			as := assert.New(t)

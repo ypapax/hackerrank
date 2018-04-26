@@ -46,7 +46,8 @@ func largestHourGlassSum(f *os.File) (int, error) {
 				[]int{i + 1, j - 1}, []int{i - 1, j - 1}, []int{i + 1, j + 1},
 				[]int{i - 1, j + 1})
 			log.Println("cur_sum", cur_sum)
-			if cur_sum > sum {
+			initial := i == 1 && j == 1
+			if cur_sum > sum || initial  {
 				sum = cur_sum
 			}
 		}
