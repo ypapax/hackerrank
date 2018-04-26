@@ -35,6 +35,9 @@ func main() {
 
 func isPrime(n int) bool {
 	log.Println("n", n)
+	if n <= 1 {
+		return false
+	}
 	for i := 2; i <= int(math.Sqrt(float64(n))); i++ {
 		log.Println("i", i)
 		if n%i == 0 {

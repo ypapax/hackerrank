@@ -19,6 +19,7 @@ func TestLargestHourGlassSum(t *testing.T) {
 		{7, true},
 		{104729, true},
 		{104730, false},
+		{1, false},
 	} {
 		t.Run(fmt.Sprintf("test%+v", tc.in), func(t *testing.T) {
 			as := assert.New(t)
