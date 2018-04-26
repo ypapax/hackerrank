@@ -19,8 +19,6 @@ func main() {
 }
 
 func largestHourGlassSum(f *os.File) (int, error) {
-	//var i int
-
 	m, err := scanMatrix(matrix_size, f)
 	if err != nil {
 		log.Println(err)

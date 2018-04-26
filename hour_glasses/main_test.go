@@ -4,27 +4,28 @@ import (
 	"fmt"
 	"testing"
 
+	"os"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestLargestHourGlassSum(t *testing.T) {
 	type testCase struct {
 		in string
-		o int
+		o  int
 	}
 	for _, tc := range []testCase{
-		{`1 1 1 0 0 0
-0 1 0 0 0 0
-1 1 1 0 0 0
-0 0 2 4 4 0
-0 0 0 2 0 0
-0 0 1 2 4 0`, 19},
+		{`19.txt`, 19},
 	} {
 		t.Run(fmt.Sprintf("test%+v", tc.in), func(t *testing.T) { // https://youtu.be/hVFEV-ieeew?t=1037
-			r, o, err := largestHourGlassSum(tc.in)
 			as := assert.New(t)
+			file, err := os.Open(tc.in) // For read access.
+			if !as.NoError(err) {
+				return
+			}
+			defer file.Close()
+			o, err := largestHourGlassSum(file)
 			as.NoError(err)
-			as.Equal(tc.b, r)
 			as.Equal(tc.o, o)
 		})
 	}
