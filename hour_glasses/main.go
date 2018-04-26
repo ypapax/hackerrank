@@ -26,35 +26,40 @@ func largestHourGlassSum(f *os.File) (int, error) {
 		log.Println(err)
 		return 0, err
 	}
-	fmt.Println(m)
 	var sum int
-	for i := 1; i<matrix_size-1; i++ {
+	for i := 1; i < matrix_size-1; i++ {
 		log.Println("line-----------", i)
-		for j := 1; j<matrix_size-1; j++ {
+		for j := 1; j < matrix_size-1; j++ {
 			log.Println("-------j", j)
 			center := m[i][j]
-			up := m[i+1][j]
 			down := m[i+1][j]
-			upleft := m[i+1][j-1]
-			downleft := m[i-1][j-1]
-			upright := m[i+1][j+1]
-			downright := m[i-1][j+1]
-			log.Println(upleft, up, upright)
+			up := m[i-1][j]
+			downleft := m[i+1][j-1]
+			upleft := m[i-1][j-1]
+			downright := m[i+1][j+1]
+
+			upright := m[i-1][j+1]
+			log.Println(upleft, down, upright)
 			log.Println(" ", center, " ")
-			log.Println(downleft, up, downright)
-			cur_sum := center + up + down + upleft + downleft + upright + downright
+			log.Println(downleft, down, downright)
+			cur_sum := center + down + up + downleft + upleft + downright + upright
+
+			printMatrix(m, []int{i, j}, []int{i + 1, j}, []int{i - 1, j},
+				[]int{i + 1, j - 1}, []int{i - 1, j - 1}, []int{i + 1, j + 1},
+				[]int{i - 1, j + 1})
 			log.Println("cur_sum", cur_sum)
 			if cur_sum > sum {
 				sum = cur_sum
 			}
 		}
 	}
+
 	return sum, nil
 }
 
 func scanMatrix(size int, f *os.File) ([][]int, error) {
 	var m [][]int
-	for i:=0; i<matrix_size; i++ {
+	for i := 0; i < matrix_size; i++ {
 		a, err := scanSlice(matrix_size, f)
 		if err != nil {
 			log.Println(err)
@@ -74,4 +79,24 @@ func scanSlice(size int, f *os.File) ([]int, error) { // https://stackoverflow.c
 		}
 	}
 	return in, nil
+}
+
+func printMatrix(m [][]int, highlight ...[]int) {
+	for i, r := range m {
+		for j, v := range r {
+			_ = i
+			_ = j
+			var color, noColor string
+			for _, h := range highlight {
+				if i == h[0] && j == h[1] {
+					color = "\033[0;31m" // red
+					noColor = "\033[0m"
+					break
+				}
+
+			}
+			fmt.Fprint(os.Stderr, color, v, noColor, " ")
+		}
+		fmt.Fprintln(os.Stderr)
+	}
 }
