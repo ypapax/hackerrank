@@ -3,11 +3,34 @@ package main
 import (
 	"log"
 	"math"
+	"fmt"
+	"io"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
+	var c int
+	_, err := fmt.Scan(&c)
+	if err != nil {
+		log.Println("error", err)
+		return
+	}
+	log.Println(c, "test cases")
+	for {
+		var i int
+		_, err := fmt.Scan(&i)
+		if err != nil {
+			if err == io.EOF {
+				return
+			}
+			log.Println("error", err)
+		}
+		if isPrime(i) {
+			fmt.Println("Prime")
+		} else {
+			fmt.Println("Not prime")
+		}
+	}
 }
 
 func isPrime(n int) bool {
