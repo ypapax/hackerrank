@@ -10,7 +10,8 @@ import (
 )
 
 func main() {
-	decimal, err := readInt()
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	decimal, err := readIntFromStdin()
 	if err != nil {
 		log.Println(err)
 		return
@@ -20,17 +21,19 @@ func main() {
 		log.Println(err)
 		return
 	}
-	fmt.Println(o)
+	fmt.Fprintln(os.Stdout, o)
 }
 
-func readInt() (int, error) {
+func readIntFromStdin() (int, error) {
 	reader := bufio.NewReader(os.Stdin)
 	text, err := reader.ReadString('\n')
 	if err != nil {
+		log.Println(err)
 		return 0, err
 	}
 	i, err := strconv.Atoi(strings.TrimSpace(text))
 	if err != nil {
+		log.Println(err)
 		return 0, err
 	}
 	return i, nil
