@@ -43,10 +43,10 @@ func toBinaryAndOneCount(n int) (string, int, error) {
 		switch c {
 		case '1':
 			cur++
-		case '0':
 			if cur > max {
 				max = cur
 			}
+		case '0':
 			cur = 0
 		default:
 			return r, 0, fmt.Errorf("not support character %+v, expected: 0 or 1", c)
