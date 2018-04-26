@@ -11,7 +11,11 @@ const matrix_size = 6
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	largestHourGlassSum(os.Stdin)
+	s, err := largestHourGlassSum(os.Stdin)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(s)
 }
 
 func largestHourGlassSum(f *os.File) (int, error) {
@@ -23,7 +27,29 @@ func largestHourGlassSum(f *os.File) (int, error) {
 		return 0, err
 	}
 	fmt.Println(m)
-	return 0, fmt.Errorf("not implemented")
+	var sum int
+	for i := 1; i<matrix_size-1; i++ {
+		log.Println("line-----------", i)
+		for j := 1; j<matrix_size-1; j++ {
+			log.Println("-------j", j)
+			center := m[i][j]
+			up := m[i+1][j]
+			down := m[i+1][j]
+			upleft := m[i+1][j-1]
+			downleft := m[i-1][j-1]
+			upright := m[i+1][j+1]
+			downright := m[i-1][j+1]
+			log.Println(upleft, up, upright)
+			log.Println(" ", center, " ")
+			log.Println(downleft, up, downright)
+			cur_sum := center + up + down + upleft + downleft + upright + downright
+			log.Println("cur_sum", cur_sum)
+			if cur_sum > sum {
+				sum = cur_sum
+			}
+		}
+	}
+	return sum, nil
 }
 
 func scanMatrix(size int, f *os.File) ([][]int, error) {
