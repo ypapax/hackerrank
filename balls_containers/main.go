@@ -1,12 +1,13 @@
 package main
 
 import (
-	"log"
-	"os"
 	"fmt"
+	"log"
+	"math"
+	"os"
 )
 
-func init(){
+func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
 
@@ -37,15 +38,11 @@ func arrangeMatrix(m [][]int) bool {
 			if boxNumber == ballTypeNumber {
 				continue
 			}
-			for i := 0; i<= amount; i ++ {
-				targetBox := ballTypeNumber
-				ballType2 := boxNumber
-				sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballType2)
-				m = swap(m, sw)
-				if m[boxNumber][ballTypeNumber] == 0 {
-					break
-				}
-			}
+			targetBox := ballTypeNumber
+			ballType2 := boxNumber
+			swapAmount := int(math.Min(float64(amount), float64(m[targetBox][ballType2])))
+			sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballType2, swapAmount)
+			m = swap(m, sw)
 
 		}
 		if isArranged(m) {
@@ -86,8 +83,9 @@ func biggestAmount(m [][]int) int {
 
 func swap(m [][]int, sw swapping) [][]int {
 	for _, bm := range []ballMove{sw.ballMove1, sw.ballMove2} {
-		m[bm.boxFrom][bm.ballType]--
-		m[bm.boxTo][bm.ballType]++
+		log.Println("amount", sw.amount)
+		m[bm.boxFrom][bm.ballType] -= sw.amount
+		m[bm.boxTo][bm.ballType] += sw.amount
 	}
 	return m
 }
@@ -99,7 +97,7 @@ func readMatrices(f *os.File) ([][][]int, error) {
 		return nil, err
 	}
 	var mm [][][]int
-	for i := 0; i<matrixCount; i++{
+	for i := 0; i < matrixCount; i++ {
 		var dim int
 		_, err := fmt.Fscan(f, &dim)
 		if err != nil {
@@ -166,15 +164,17 @@ type ballMove struct {
 
 type swapping struct {
 	ballMove1, ballMove2 ballMove
+	amount               int
 }
 
-func newSwapping(box1, ballType1, box2, ballType2 int) swapping {
+func newSwapping(box1, ballType1, box2, ballType2, amount int) swapping {
 	return swapping{
-		ballMove1:ballMove{
+		ballMove1: ballMove{
 			box1, box2, ballType1,
 		},
-		ballMove2:ballMove{
+		ballMove2: ballMove{
 			box2, box1, ballType2,
 		},
+		amount: amount,
 	}
 }
