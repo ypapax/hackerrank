@@ -18,6 +18,12 @@ func main() {
 	for i, m := range mm {
 		log.Println("matrix", i)
 		printMatrix(m)
+		possible := arrangeMatrix(m)
+		if possible {
+			fmt.Println("Possible")
+			continue
+		}
+		fmt.Println("Impossible")
 	}
 }
 
@@ -41,14 +47,14 @@ func arrangeMatrix(m [][]int) bool {
 }
 
 func isArranged(m [][]int) bool {
-	for _, container := range m {
+	for containerNumber, container := range m {
 		typeDetected := false
 		for _, amount := range container {
 			if amount == 0 {
 				continue
 			}
 			if typeDetected {
-				log.Printf("container %+v has different types of balls\n", container)
+				log.Printf("container %+v has different types of balls\n", containerNumber)
 				return false
 			}
 			typeDetected = true
