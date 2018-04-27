@@ -18,6 +18,7 @@ func TestArrangeMatrix(t *testing.T) {
 		{"possible.txt", true},
 		{"impossible.txt", false},
 		{"2_big.txt", true},
+		{"4_big.txt", true},
 		{"possible4.txt", true},
 		{"possible100.txt", true},
 	} {

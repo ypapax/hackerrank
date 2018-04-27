@@ -39,10 +39,22 @@ func arrangeMatrix(m [][]int) bool {
 				continue
 			}
 			targetBox := ballTypeNumber
-			ballType2 := boxNumber
-			swapAmount := int(math.Min(float64(amount), float64(m[targetBox][ballType2])))
-			sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballType2, swapAmount)
+			targetValue := m[targetBox][ballTypeNumber]
+			swapAmount := int(math.Min(float64(amount), float64(targetValue)))
+			ballTypeNumber2 := boxNumber
+			sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2, swapAmount)
+			pr := func(msg string) {
+				log.Println(msg)
+				printMatrix(m, sw.ballMove1.from, sw.ballMove1.to, sw.ballMove2.from, sw.ballMove2.to)
+			}
+
+			if sw.amount == 0 {
+				pr("swap amount is 0")
+				continue
+			}
+			pr(fmt.Sprintf("before swap %+v", sw))
 			m = swap(m, sw)
+			pr("after swap")
 
 		}
 		if isArranged(m) {
@@ -84,8 +96,8 @@ func biggestAmount(m [][]int) int {
 func swap(m [][]int, sw swapping) [][]int {
 	for _, bm := range []ballMove{sw.ballMove1, sw.ballMove2} {
 		log.Println("amount", sw.amount)
-		m[bm.boxFrom][bm.ballType] -= sw.amount
-		m[bm.boxTo][bm.ballType] += sw.amount
+		m[bm.from.row][bm.from.column] -= sw.amount
+		m[bm.to.row][bm.to.column] += sw.amount
 	}
 	return m
 }
@@ -138,28 +150,76 @@ func scanSlice(size int, f *os.File) ([]int, error) {
 	return in, nil
 }
 
-func printMatrix(m [][]int, highlight ...[2]int) {
+type point struct {
+	row, column int
+	color       color
+}
+
+type color int
+
+const (
+	red     color = 31
+	green   color = 32
+	redBG   color = 101
+	greenBG color = 102
+)
+
+func getColor(c color) string {
+	if c == 0 {
+		return "\033[0m" // turn off the color
+	}
+	return fmt.Sprintf("\033[0;%+vm", c) // https://misc.flogisoft.com/bash/tip_colors_and_formatting
+}
+
+func printMatrix(m [][]int, highlight ...point) {
+	maxLength := func() int {
+		var max int
+		for _, r := range m {
+			for _, v := range r {
+				if l := len(fmt.Sprintf("%+v", v)); l > max {
+					max = l
+				}
+			}
+		}
+		return max
+	}()
+
+	line := func() {
+		l := "-"
+		size := maxLength * len(m)
+		for i := 0; i <= size; i++ {
+			l += "-"
+		}
+		fmt.Fprint(os.Stderr, l, "\n")
+	}
+	line()
 	for i, r := range m {
 		for j, v := range r {
 			_ = i
 			_ = j
-			var color, noColor string
+			var clr, noClr string
 			for _, h := range highlight {
-				if i == h[0] && j == h[1] {
-					color = "\033[0;31m" // red
-					noColor = "\033[0m"
+				if i == h.row && j == h.column {
+					clr = getColor(h.color)
+					noClr = getColor(0)
 					break
 				}
 
 			}
-			fmt.Fprint(os.Stderr, color, v, noColor, " ")
+			tab := " "
+			delta := maxLength + 1 - len(fmt.Sprintf("%+v", v))
+			for i := 0; i < delta; i++ {
+				tab += " "
+			}
+			fmt.Fprint(os.Stderr, clr, v, noClr, tab)
 		}
 		fmt.Fprintln(os.Stderr)
 	}
+	line()
 }
 
 type ballMove struct {
-	boxFrom, boxTo, ballType int
+	from, to point
 }
 
 type swapping struct {
@@ -170,10 +230,10 @@ type swapping struct {
 func newSwapping(box1, ballType1, box2, ballType2, amount int) swapping {
 	return swapping{
 		ballMove1: ballMove{
-			box1, box2, ballType1,
+			point{box1, ballType1, red}, point{box2, ballType1, green},
 		},
 		ballMove2: ballMove{
-			box2, box1, ballType2,
+			point{box2, ballType2, redBG}, point{box1, ballType2, greenBG},
 		},
 		amount: amount,
 	}
