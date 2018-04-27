@@ -31,13 +31,22 @@ func arrangeMatrix(m [][]int) bool {
 	if isArranged(m) {
 		return true
 	}
+
 	for boxNumber, box := range m {
-		for ballTypeNumber := range box {
+		for ballTypeNumber, amount := range box {
 			if boxNumber == ballTypeNumber {
 				continue
 			}
-			targetBox := ballTypeNumber
-			m = swap(m, [2]int{boxNumber, ballTypeNumber}, [2]int{targetBox, ballTypeNumber})
+			for i := 0; i<= amount; i ++ {
+				targetBox := ballTypeNumber
+				ballType2 := boxNumber
+				sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballType2)
+				m = swap(m, sw)
+				if m[boxNumber][ballTypeNumber] == 0 {
+					break
+				}
+			}
+
 		}
 		if isArranged(m) {
 			return true
@@ -63,9 +72,23 @@ func isArranged(m [][]int) bool {
 	return true
 }
 
-func swap(m [][]int, from, to [2]int) [][]int {
-	m[from[0]][from[1]]--
-	m[to[0]][to[1]]++
+func biggestAmount(m [][]int) int {
+	max := m[0][0]
+	for _, container := range m {
+		for _, amount := range container {
+			if amount > max {
+				max = amount
+			}
+		}
+	}
+	return max
+}
+
+func swap(m [][]int, sw swapping) [][]int {
+	for _, bm := range []ballMove{sw.ballMove1, sw.ballMove2} {
+		m[bm.boxFrom][bm.ballType]--
+		m[bm.boxTo][bm.ballType]++
+	}
 	return m
 }
 
@@ -117,7 +140,7 @@ func scanSlice(size int, f *os.File) ([]int, error) {
 	return in, nil
 }
 
-func printMatrix(m [][]int, highlight ...[]int) {
+func printMatrix(m [][]int, highlight ...[2]int) {
 	for i, r := range m {
 		for j, v := range r {
 			_ = i
@@ -134,5 +157,24 @@ func printMatrix(m [][]int, highlight ...[]int) {
 			fmt.Fprint(os.Stderr, color, v, noColor, " ")
 		}
 		fmt.Fprintln(os.Stderr)
+	}
+}
+
+type ballMove struct {
+	boxFrom, boxTo, ballType int
+}
+
+type swapping struct {
+	ballMove1, ballMove2 ballMove
+}
+
+func newSwapping(box1, ballType1, box2, ballType2 int) swapping {
+	return swapping{
+		ballMove1:ballMove{
+			box1, box2, ballType1,
+		},
+		ballMove2:ballMove{
+			box2, box1, ballType2,
+		},
 	}
 }

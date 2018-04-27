@@ -17,6 +17,9 @@ func TestArrangeMatrix(t *testing.T) {
 	for _, tc := range []testCase{
 		{"possible.txt", true},
 		{"impossible.txt", false},
+		{"2_big.txt", true},
+		{"possible4.txt", true},
+		{"possible100.txt", true},
 	} {
 		t.Run(fmt.Sprintf("test%+v", tc.in), func(t *testing.T) {
 			as := assert.New(t)
@@ -32,6 +35,35 @@ func TestArrangeMatrix(t *testing.T) {
 				return
 			}
 			o := arrangeMatrix(mm[0])
+			if !as.Equal(tc.o, o) {
+				t.Error("should be equal")
+			}
+		})
+	}
+}
+
+func TestSwap(t *testing.T) {
+	type testCase struct {
+		in [][]int
+		sw swapping
+		o  [][]int
+	}
+	cases := []testCase{
+		{[][]int{
+			[]int{1, 1},
+			[]int{1, 1},
+		}, swapping{
+			ballMove1: ballMove{0, 1, 1},
+			ballMove2: ballMove{1, 0, 0},
+		}, [][]int{
+			[]int{2, 0},
+			[]int{0, 2}},
+		},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("test%+v", tc.in), func(t *testing.T) {
+			as := assert.New(t)
+			o := swap(tc.in, tc.sw)
 			if !as.Equal(tc.o, o) {
 				t.Error("should be equal")
 			}
