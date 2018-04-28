@@ -53,7 +53,7 @@ func TestSwap(t *testing.T) {
 		{[][]int{
 			[]int{1, 1},
 			[]int{1, 1},
-		}, newSwapping(0, 1, 1, 0, 1), [][]int{
+		}, newSwapping(0, 1, 1, 0), [][]int{
 			[]int{2, 0},
 			[]int{0, 2}},
 		},

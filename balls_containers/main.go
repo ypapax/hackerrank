@@ -34,15 +34,18 @@ func arrangeMatrix(m [][]int) bool {
 	}
 
 	for boxNumber, box := range m {
-		for ballTypeNumber, amount := range box {
+		for ballTypeNumber := range box {
 			if boxNumber == ballTypeNumber {
 				continue
 			}
 			targetBox := ballTypeNumber
-			targetValue := m[targetBox][ballTypeNumber]
-			swapAmount := int(math.Min(float64(amount), float64(targetValue)))
 			ballTypeNumber2 := boxNumber
-			sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2, swapAmount)
+			sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2)
+			a1 := m[sw.ballMove1.from.row][sw.ballMove1.from.column]
+			a2 := m[sw.ballMove2.from.row][sw.ballMove2.from.column]
+			log.Println("box", boxNumber, "contains", a1, "balls of type", ballTypeNumber)
+			log.Println("box", targetBox, "contains", a2, "balls of type", ballTypeNumber2)
+			sw.amount = int(math.Min(float64(a1), float64(a2)))
 			pr := func(msg string) {
 				log.Println(msg)
 				printMatrix(m, sw.ballMove1.from, sw.ballMove1.to, sw.ballMove2.from, sw.ballMove2.to)
@@ -95,9 +98,9 @@ func biggestAmount(m [][]int) int {
 
 func swap(m [][]int, sw swapping) [][]int {
 	for _, bm := range []ballMove{sw.ballMove1, sw.ballMove2} {
-		log.Println("amount", sw.amount)
 		m[bm.from.row][bm.from.column] -= sw.amount
 		m[bm.to.row][bm.to.column] += sw.amount
+		log.Printf("%+v balls of type %+v had moved from box %+v to box %+v\n", sw.amount, bm.from.column, bm.from.row, bm.to.row)
 	}
 	return m
 }
@@ -227,7 +230,7 @@ type swapping struct {
 	amount               int
 }
 
-func newSwapping(box1, ballType1, box2, ballType2, amount int) swapping {
+func newSwapping(box1, ballType1, box2, ballType2 int) swapping {
 	return swapping{
 		ballMove1: ballMove{
 			point{box1, ballType1, red}, point{box2, ballType1, green},
@@ -235,6 +238,6 @@ func newSwapping(box1, ballType1, box2, ballType2, amount int) swapping {
 		ballMove2: ballMove{
 			point{box2, ballType2, redBG}, point{box1, ballType2, greenBG},
 		},
-		amount: amount,
+		amount: 1,
 	}
 }
