@@ -8,11 +8,32 @@ const backend = "http://localhost:8083";
 class App extends Component {
     constructor() {
         super()
-        this.state = {}
+        this.state = {
+            matrices: []
+        }
     }
 
     showError(msg) {
         alert(msg);
+    }
+
+    matrixChanged(m, cb){
+        debugger;
+        let mm = this.state.matrices;
+        if (!mm || !mm.length) {
+            mm = [m];
+        } else {
+            mm.push(m);
+        }
+
+        this.setState({
+            "matrices": mm
+        }, function () {
+            console.info("new state", this.state);
+            if (cb) {
+                cb();
+            }
+        })
     }
 
     parse(input) {
@@ -22,12 +43,10 @@ class App extends Component {
             data: JSON.stringify({Params: [input]}),
             success: function (data) {
                 console.info("data", data);
-                this.setState({
-                    "matrix": data[0]
-                }, function () {
-                    console.info("new state", this.state);
-                    this.arrange();
-                })
+                if (this.hasError(data)) {
+                    return;
+                }
+                this.matrixChanged(data[0]/*, this.arrange.bind(this)*/);
             }.bind(this),
             dataType: "json",
             error: function (e) {
@@ -36,18 +55,21 @@ class App extends Component {
         });
     }
 
+    lastMatrix(){
+        return this.state.matrices[this.state.matrices.length - 1];
+    }
+
     arrange() {
         $.ajax({
             type: "POST",
             url: backend + "/api/v1/arrange",
-            data: JSON.stringify({Params: [JSON.stringify(this.state.matrix)]}),
+            data: JSON.stringify({Params: [JSON.stringify(this.lastMatrix())]}),
             success: function (data) {
                 console.info("data", data);
-                this.setState({
-                    "matrix": data.m
-                }, function () {
-                    console.info("new state", this.state);
-                })
+                if (this.hasError(data)) {
+                    return;
+                }
+                this.matrixChanged(data.m);
             }.bind(this),
             dataType: "json",
             error: function (e) {
@@ -62,28 +84,31 @@ class App extends Component {
             url: backend + "/api/v1/swap",
             data: JSON.stringify({
                 Params: [
-                    JSON.stringify(this.state.matrix),
+                    JSON.stringify(this.lastMatrix()),
                     senderRow.toString(), senderColumn.toString(),
                     targetRow.toString(), targetColumn.toString()
                 ]
             }),
             success: function (data) {
                 console.info("data", data);
-                if (data.hasOwnProperty("reason")) {
-                    this.showError(data.reason);
+                if (this.hasError(data)) {
                     return;
                 }
-                this.setState({
-                    "matrix": data
-                }, function () {
-                    console.info("new state", this.state);
-                })
+                this.matrixChanged(data);
             }.bind(this),
             dataType: "json",
             error: function (e) {
                 console.error(e);
             }
         });
+    }
+
+    hasError(data){
+        if (data.hasOwnProperty("reason")) {
+            this.showError(data.reason);
+            return data;
+        }
+        return null;
     }
 
 
@@ -93,7 +118,6 @@ class App extends Component {
     }
 
     onDrop(senderRow, senderColumn, targetRow, targetColumn) {
-        let m = this.state.matrix;
         this.swap(senderRow, senderColumn, targetRow, targetColumn);
     }
 
@@ -101,7 +125,7 @@ class App extends Component {
         return (
             <div className="App">
                 <Arranger
-                    matrix={this.state.matrix}
+                    matrices={this.state.matrices}
                     onParse={this.parse.bind(this)}
                     onArrange={this.arrange.bind(this)}
                     onInputChanged={this.inputChanged.bind(this)}

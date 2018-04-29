@@ -8,11 +8,16 @@ class Row extends Component {
             return ""
         }
         let cells = this.props.cells.map((v, i) => {
+            let matrix=this.props.matrix;
+            let row=this.props.row;
+            let column = i;
+            let key=matrix.toString() + "_" + row.toString() + "_" + column.toString();
             return (<Cell
                 value={v}
-                column={i}
+                column={column}
                 row={this.props.row}
                 onDrop={this.props.onDrop.bind(this)}
+                key={key}
             />)
         });
         console.info("cells", cells);

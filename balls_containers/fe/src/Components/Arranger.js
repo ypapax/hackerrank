@@ -11,9 +11,8 @@ class Arranger extends Component {
 960369681 997828120 999792735 979622676
 999013654 998634077 997988323 958769423
 997409523 999301350 940952923 993020546`,
-            matrix: props.matrix
         };
-        this.inputChanged(this.state.input);
+        //this.inputChanged(this.state.input);
     }
 
     componentDidMount() {
@@ -21,7 +20,7 @@ class Arranger extends Component {
     }
 
     onParse() {
-        this.props.parse(this.state.input);
+        this.props.onParse(this.state.input);
     }
 
     inputChanged(input) {
@@ -31,24 +30,32 @@ class Arranger extends Component {
     }
 
     arrange() {
-        this.props.arrange();
+        this.props.onArrange();
     }
 
     render() {
         console.info("Arranger render, arranger state", this.state);
-        return (
-            <div className="arranger">
-                <div>
-              <textarea rows="10" cols="10" value={this.state.input} onChange={this.inputChanged.bind(this)}>
-              </textarea>
-                </div>
+        let matrices = this.props.matrices.map((matrix, index) => {
+            console.info("matrix", index, matrix);
+            return (
 
-                <button className="btn btn-success" onClick={this.onParse.bind(this)}>Parse</button>
                 <Matrix
-                    matrix={this.props.matrix}
+                    matrix={matrix}
                     onArrange={this.arrange.bind(this)}
                     onDrop={this.props.onDrop.bind(this)}
+                    index={index}
+                    key={index}
                 />
+            );
+        });
+        return (
+            <div className="arranger">
+              <textarea rows="10" cols="10" value={this.state.input} onChange={this.inputChanged.bind(this)}>
+              </textarea>
+                <button className="btn btn-success" onClick={this.onParse.bind(this)}>Parse</button>
+                <div className="matrices">
+                    {matrices}
+                </div>
             </div>
         );
     }

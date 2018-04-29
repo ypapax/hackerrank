@@ -11,20 +11,25 @@ class Matrix extends Component {
     }
 
     arrange() {
-        this.props.arrange();
+        this.props.onArrange();
     }
 
     render() {
         console.info("this.props.matrix", this.props.matrix);
         if (!this.props.matrix) {
+            console.info("no matrix, props:", this.props);
             return ""
         }
-        let rows = this.props.matrix.map((r, index) => {
+        let rows = this.props.matrix.map((r, rowNumber) => {
+            let matrix=this.props.index;
+            let key = matrix.toString() + "_" + rowNumber.toString();
             return (
                 <Row
                     cells={r}
-                    row={index}
+                    row={rowNumber}
                     onDrop={this.props.onDrop.bind(this)}
+                    matrix={this.props.index}
+                        key={key}
                 />
             )
         });
