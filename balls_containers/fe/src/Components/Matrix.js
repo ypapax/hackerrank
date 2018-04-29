@@ -10,6 +10,10 @@ class Matrix extends Component {
         console.info("props.matrix", props.matrix);
     }
 
+    arrange(){
+        this.props.onArrange();
+    }
+
   render() {
       console.info("this.props.matrix", this.props.matrix);
         if (!this.props.matrix) {
@@ -19,9 +23,13 @@ class Matrix extends Component {
             return (<Row cells={r} key={index}/>)
         });
         console.info("rows", rows);
+        let buttons = (
+            <button className="btn btn-danger" onClick={this.arrange.bind(this)}>Arrange</button>
+        )
     return (
       <div className="matrix">
           {rows}
+          {buttons}
       </div>
     );
   }

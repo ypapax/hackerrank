@@ -12,15 +12,21 @@ class Arranger extends Component {
 997409523 999301350 940952923 993020546`,
             matrix: props.matrix
         };
+        this.inputChanged(this.state.input);
     }
     componentDidMount(){
 
     }
     onParse(){
-        this.props.onParse(this.state.input);
+        this.props.parse(this.state.input);
     }
     inputChanged(input){
         this.setState({input: input});
+        console.info("input changed in Arranger.js", input);
+        this.props.onInputChanged(input);
+    }
+    arrange(){
+        this.props.onArrange();
     }
   render() {
         console.info("Arranger render, arranger state", this.state);
@@ -32,7 +38,10 @@ class Arranger extends Component {
           </div>
 
           <button className="btn btn-success" onClick={this.onParse.bind(this)}>Parse</button>
-          <Matrix matrix={this.props.matrix}/>
+          <Matrix
+              matrix={this.props.matrix}
+              onArrange={this.arrange.bind(this)}
+          />
       </div>
     );
   }

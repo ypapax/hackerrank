@@ -9,4 +9,13 @@ textarea{
 
 .cell{
   margin: 20px;
+  text-align: left;
+}
+
+.matrix {
+  margin: 20px;
+}
+
+.btn{
+  margin: 20px;
 }
