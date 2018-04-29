@@ -35,7 +35,7 @@ func TestArrangeMatrix(t *testing.T) {
 				t.Log(err)
 				return
 			}
-			o := arrangeMatrix(mm[0])
+			o := arrangeMatrix(mm[0], true)
 			if !as.Equal(tc.o, o) {
 				t.Error("should be equal")
 			}

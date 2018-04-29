@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+var debug bool
+
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
@@ -19,7 +21,7 @@ func main() {
 	for i, m := range mm {
 		log.Println("matrix", i)
 		printMatrix(m)
-		possible := arrangeMatrix(m)
+		possible := arrangeMatrix(m, true)
 		if possible {
 			fmt.Println("Possible")
 			continue
@@ -28,7 +30,7 @@ func main() {
 	}
 }
 
-func arrangeMatrix(m [][]int) bool {
+func arrangeMatrix(m [][]int, debug bool) bool {
 	if isArranged(m) {
 		return true
 	}
@@ -40,31 +42,38 @@ func arrangeMatrix(m [][]int) bool {
 			}
 			targetBox := ballTypeNumber
 			ballTypeNumber2 := boxNumber
-			sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2)
-			a1 := m[sw.ballMove1.from.row][sw.ballMove1.from.column]
-			a2 := m[sw.ballMove2.from.row][sw.ballMove2.from.column]
-			log.Println("box", boxNumber, "contains", a1, "balls of type", ballTypeNumber)
-			log.Println("box", targetBox, "contains", a2, "balls of type", ballTypeNumber2)
-			sw.amount = int(math.Min(float64(a1), float64(a2)))
-			pr := func(msg string) {
-				log.Println(msg)
-				printMatrix(m, sw.ballMove1.from, sw.ballMove1.to, sw.ballMove2.from, sw.ballMove2.to)
-			}
-
-			if sw.amount == 0 {
-				pr("swap amount is 0")
-				continue
-			}
-			pr(fmt.Sprintf("before swap %+v", sw))
-			m = swap(m, sw)
-			pr("after swap")
-
+			swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2, m)
 		}
 		if isArranged(m) {
 			return true
 		}
 	}
+	arranged := isArranged(m)
+	if !arranged && debug {
+		m = debugArrange(m)
+	}
 	return isArranged(m)
+}
+
+func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) {
+	sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2)
+	a1 := m[sw.ballMove1.from.row][sw.ballMove1.from.column]
+	a2 := m[sw.ballMove2.from.row][sw.ballMove2.from.column]
+	log.Println("box", boxNumber, "contains", a1, "balls of type", ballTypeNumber)
+	log.Println("box", targetBox, "contains", a2, "balls of type", ballTypeNumber2)
+	sw.amount = int(math.Min(float64(a1), float64(a2)))
+	pr := func(msg string) {
+		log.Println(msg)
+		printMatrix(m, sw.ballMove1.from, sw.ballMove1.to, sw.ballMove2.from, sw.ballMove2.to)
+	}
+
+	if sw.amount == 0 {
+		pr("swap amount is 0")
+		return
+	}
+	pr(fmt.Sprintf("before swap %+v", sw))
+	m = swap(m, sw)
+	pr("after swap")
 }
 
 func isArranged(m [][]int) bool {
