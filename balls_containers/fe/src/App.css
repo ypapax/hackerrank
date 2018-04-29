@@ -19,3 +19,9 @@ textarea{
 .btn{
   margin: 20px;
 }
+
+.table {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}

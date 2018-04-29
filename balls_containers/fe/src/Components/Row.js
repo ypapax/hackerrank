@@ -5,13 +5,13 @@ class Row extends Component {
             return ""
         }
         let cells = this.props.cells.map((v, i) => {
-           return (<span key={i} className="cell">{v}</span>)
+           return (<td key={i} className="cell">{v}</td>)
         });
         console.info("cells", cells);
     return (
-      <div className="row">
-          {cells}
-      </div>
+          <tr>
+            {cells}
+          </tr>
     );
   }
 }

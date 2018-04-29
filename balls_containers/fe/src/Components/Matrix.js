@@ -20,7 +20,9 @@ class Matrix extends Component {
             return ""
         }
         let rows = this.props.matrix.map((r, index) => {
-            return (<Row cells={r} key={index}/>)
+            return (
+                <Row cells={r} key={index}/>
+            )
         });
         console.info("rows", rows);
         let buttons = (
@@ -28,7 +30,9 @@ class Matrix extends Component {
         )
     return (
       <div className="matrix">
+          <table className="table">
           {rows}
+          </table>
           {buttons}
       </div>
     );
