@@ -6,6 +6,12 @@ import $ from "jquery";
 const backend = "http://localhost:8083";
 
 class App extends Component {
+  constructor(){
+    super()
+    this.state = {
+
+    }
+  }
 
   onParse(input){
       $.ajax({
@@ -14,7 +20,12 @@ class App extends Component {
           data: JSON.stringify({Params:[input]}),
           success: function(data) {
               console.info("data", data);
-          },
+              this.setState({
+                  "matrix": data[0]
+              }, function () {
+                  console.info("new state", this.state);
+              })
+          }.bind(this),
           dataType: "json",
           error: function(e) {
               console.error("Could not request expenses data");
@@ -25,7 +36,9 @@ class App extends Component {
     return (
       <div className="App">
           <Arranger
-            onParse={this.onParse}/>
+            onParse={this.onParse.bind(this)}
+            matrix={this.state.matrix}
+          />
       </div>
     );
   }

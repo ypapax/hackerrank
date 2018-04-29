@@ -6,3 +6,7 @@ textarea{
   width: 600px;
   height: 200px;
 }
+
+.cell{
+  margin: 20px;
+}
