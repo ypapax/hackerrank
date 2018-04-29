@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Matrix from "./Matrix";
+
 class Arranger extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             input: `1
@@ -14,37 +15,47 @@ class Arranger extends Component {
         };
         this.inputChanged(this.state.input);
     }
-    componentDidMount(){
+
+    componentDidMount() {
 
     }
-    onParse(){
+
+    onParse() {
         this.props.parse(this.state.input);
     }
-    inputChanged(input){
+
+    inputChanged(input) {
         this.setState({input: input});
         console.info("input changed in Arranger.js", input);
         this.props.onInputChanged(input);
     }
-    arrange(){
+
+    arrange() {
         this.props.arrange();
     }
-  render() {
-        console.info("Arranger render, arranger state", this.state);
-    return (
-      <div className="arranger">
-          <div>
-              <textarea rows="10" cols="10" value={this.state.input}  onChange={this.inputChanged.bind(this)}>
-              </textarea>
-          </div>
 
-          <button className="btn btn-success" onClick={this.onParse.bind(this)}>Parse</button>
-          <Matrix
-              matrix={this.props.matrix}
-              onArrange={this.arrange.bind(this)}
-          />
-      </div>
-    );
-  }
+    onDrop(row, column) {
+        this.props.onDrop(row, column)
+    }
+
+    render() {
+        console.info("Arranger render, arranger state", this.state);
+        return (
+            <div className="arranger">
+                <div>
+              <textarea rows="10" cols="10" value={this.state.input} onChange={this.inputChanged.bind(this)}>
+              </textarea>
+                </div>
+
+                <button className="btn btn-success" onClick={this.onParse.bind(this)}>Parse</button>
+                <Matrix
+                    matrix={this.props.matrix}
+                    onArrange={this.arrange.bind(this)}
+                    onDrop={this.onDrop.bind(this)}
+                />
+            </div>
+        );
+    }
 }
 
 export default Arranger;
