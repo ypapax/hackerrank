@@ -33,6 +33,7 @@ class App extends Component {
             if (cb) {
                 cb();
             }
+            window.scrollTo(0,document.body.scrollHeight); // scroll to bottom
         })
     }
 
