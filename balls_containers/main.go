@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"flag"
+	"io"
 )
 
 var debug bool
@@ -124,7 +125,7 @@ func swap(m [][]int, sw swapping) [][]int {
 	return m
 }
 
-func readMatrices(f *os.File) ([][][]int, error) {
+func readMatrices(f io.Reader) ([][][]int, error) {
 	var matrixCount int
 	if _, err := fmt.Fscan(f, &matrixCount); err != nil {
 		log.Println(err)
@@ -148,7 +149,7 @@ func readMatrices(f *os.File) ([][][]int, error) {
 	return mm, nil
 }
 
-func scanMatrix(size int, f *os.File) ([][]int, error) {
+func scanMatrix(size int, f io.Reader) ([][]int, error) {
 	var m [][]int
 	for i := 0; i < size; i++ {
 		a, err := scanSlice(size, f)
@@ -161,7 +162,7 @@ func scanMatrix(size int, f *os.File) ([][]int, error) {
 	return m, nil
 }
 
-func scanSlice(size int, f *os.File) ([]int, error) {
+func scanSlice(size int, f io.Reader) ([]int, error) {
 	in := make([]int, size)
 	for i := range in {
 		_, err := fmt.Fscan(f, &in[i])

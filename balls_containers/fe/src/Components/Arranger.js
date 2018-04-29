@@ -14,8 +14,8 @@ class Arranger extends Component {
     componentDidMount(){
 
     }
-    onArrange(){
-        this.props.onArrange(this.state.input);
+    onParse(){
+        this.props.onParse(this.state.input);
     }
     inputChanged(input){
         this.setState({input: input});
@@ -28,7 +28,7 @@ class Arranger extends Component {
                 </textarea>
           </div>
 
-          <button className="btn btn-success" onClick={this.onArrange.bind(this)}>Arrange</button>
+          <button className="btn btn-success" onClick={this.onParse.bind(this)}>Parse</button>
       </div>
     );
   }

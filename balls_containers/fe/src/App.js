@@ -7,10 +7,10 @@ const backend = "http://localhost:8083";
 
 class App extends Component {
 
-  onArrange(input){
+  onParse(input){
       $.ajax({
           type: "POST",
-          url: backend + "/api/v1/arrange",
+          url: backend + "/api/v1/parse",
           data: JSON.stringify({Params:[input]}),
           success: function(data) {
               console.info("data", data);
@@ -25,7 +25,7 @@ class App extends Component {
     return (
       <div className="App">
           <Arranger
-            onArrange={this.onArrange}/>
+            onParse={this.onParse}/>
       </div>
     );
   }

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"github.com/golang/glog"
 	"fmt"
+	"bytes"
 )
 
 func arrangeAPI(bindServer string) {
@@ -81,6 +82,7 @@ func sendResp(w http.ResponseWriter, resp *Response) {
 func initCmds() map[string]*apiFunc {
 	return map[string]*apiFunc{
 		"arrange": {Handler: arrangeHandler},
+		"parse": {Handler: parseHandler},
 	}
 }
 
@@ -125,6 +127,22 @@ func arrangeHandler(af apiCmd) (*Response, error) {
 
 	m, isArranged := arrangeMatrix(m, false)
 	return &Response{Result: map[string]interface{}{"m": m, "isArranged": isArranged}}, nil
+}
+
+func parseHandler(af apiCmd) (*Response, error) {
+	if len(af.Cmd.Params) == 0 {
+		err := fmt.Errorf("not enough arguments")
+		glog.Info(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	b := bytes.NewBufferString(af.Cmd.Params[0])
+	m, err := readMatrices(b)
+	if err != nil {
+		err := fmt.Errorf("unable to parse matrix")
+		glog.Error(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	return &Response{Result: m}, nil
 }
 
 
