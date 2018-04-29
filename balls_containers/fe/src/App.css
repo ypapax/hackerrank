@@ -9,7 +9,7 @@ textarea{
 
 .cell{
   margin: 20px;
-  text-align: left;
+  width: 100px;
 }
 
 .matrix {

@@ -26,7 +26,7 @@ class Arranger extends Component {
         this.props.onInputChanged(input);
     }
     arrange(){
-        this.props.onArrange();
+        this.props.arrange();
     }
   render() {
         console.info("Arranger render, arranger state", this.state);

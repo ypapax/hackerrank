@@ -11,7 +11,7 @@ class Matrix extends Component {
     }
 
     arrange(){
-        this.props.onArrange();
+        this.props.arrange();
     }
 
   render() {

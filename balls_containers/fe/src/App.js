@@ -24,6 +24,7 @@ class App extends Component {
                   "matrix": data[0]
               }, function () {
                   console.info("new state", this.state);
+                  this.arrange();
               })
           }.bind(this),
           dataType: "json",
@@ -32,7 +33,7 @@ class App extends Component {
           }
       });
   }
-  onArrange(){
+  arrange(){
       $.ajax({
           type: "POST",
           url: backend + "/api/v1/arrange",
@@ -61,7 +62,7 @@ class App extends Component {
           <Arranger
             matrix={this.state.matrix}
             onParse={this.parse.bind(this)}
-            onArrange={this.onArrange.bind(this)}
+            onArrange={this.arrange.bind(this)}
             onInputChanged={this.inputChanged.bind(this)}
           />
       </div>
