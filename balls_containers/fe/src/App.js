@@ -57,10 +57,11 @@ class App extends Component {
         this.parse(input);
     }
 
-    onDrop(row, column) {
+    onDrop(senderRow, senderColumn, targetRow, targetColumn) {
         let m = this.state.matrix;
         debugger;
-        m[row][column] = 666;
+        m[senderRow][senderColumn] = 666;
+        m[targetRow][targetColumn] = 777;
         this.setState({
             "matrix": m
         })

@@ -14,10 +14,6 @@ class Matrix extends Component {
         this.props.arrange();
     }
 
-    onDrop(row, column){
-        this.props.onDrop(row, column);
-    }
-
     render() {
         console.info("this.props.matrix", this.props.matrix);
         if (!this.props.matrix) {
@@ -28,7 +24,7 @@ class Matrix extends Component {
                 <Row
                     cells={r}
                     row={index}
-                    onDrop={this.onDrop.bind(this)}
+                    onDrop={this.props.onDrop.bind(this)}
                 />
             )
         });

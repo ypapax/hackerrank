@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import Cell from "./Cell";
 
 class Row extends Component {
-    onDrop(column) {
-        let row = this.props.row;
-        this.props.onDrop(row, column);
-    }
 
     render() {
         if (!this.props.cells) {
@@ -15,7 +11,8 @@ class Row extends Component {
             return (<Cell
                 value={v}
                 column={i}
-                onDrop={this.onDrop.bind(this)}
+                row={this.props.row}
+                onDrop={this.props.onDrop.bind(this)}
             />)
         });
         console.info("cells", cells);

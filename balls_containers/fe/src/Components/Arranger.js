@@ -34,10 +34,6 @@ class Arranger extends Component {
         this.props.arrange();
     }
 
-    onDrop(row, column) {
-        this.props.onDrop(row, column)
-    }
-
     render() {
         console.info("Arranger render, arranger state", this.state);
         return (
@@ -51,7 +47,7 @@ class Arranger extends Component {
                 <Matrix
                     matrix={this.props.matrix}
                     onArrange={this.arrange.bind(this)}
-                    onDrop={this.onDrop.bind(this)}
+                    onDrop={this.props.onDrop.bind(this)}
                 />
             </div>
         );
