@@ -10,6 +10,7 @@ textarea{
 .cell{
   margin: 20px;
   width: 100px;
+  cursor: pointer;
 }
 
 .matrix {
