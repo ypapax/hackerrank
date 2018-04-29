@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import $ from 'jquery'
 class Arranger extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             input: `1
 4
@@ -10,20 +9,26 @@ class Arranger extends Component {
 960369681 997828120 999792735 979622676
 999013654 998634077 997988323 958769423
 997409523 999301350 940952923 993020546`
-        }
+        };
     }
     componentDidMount(){
 
+    }
+    onArrange(){
+        this.props.onArrange(this.state.input);
+    }
+    inputChanged(input){
+        this.setState({input: input});
     }
   render() {
     return (
       <div className="arranger">
           <div>
-              <textarea rows="10" cols="10" value={this.state.input}>
+              <textarea rows="10" cols="10" value={this.state.input}  onChange={this.inputChanged.bind(this)}>
                 </textarea>
           </div>
 
-          <button className="btn btn-success">Arrange</button>
+          <button className="btn btn-success" onClick={this.onArrange.bind(this)}>Arrange</button>
       </div>
     );
   }

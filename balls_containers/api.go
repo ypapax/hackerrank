@@ -13,6 +13,8 @@ import (
 func arrangeAPI(bindServer string) {
 	apiFuncs := initCmds()
 	http.HandleFunc("/api/v1/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		log.Printf("URL path: %s", r.URL.Path[1:])
 
 		fields := strings.Split(r.URL.Path[1:], "/")
