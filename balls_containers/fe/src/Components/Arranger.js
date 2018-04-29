@@ -12,11 +12,10 @@ class Arranger extends Component {
 999013654 998634077 997988323 958769423
 997409523 999301350 940952923 993020546`,
         };
-        //this.inputChanged(this.state.input);
     }
 
-    componentDidMount() {
-
+    componentDidMount(){
+        this.inputChanged(this.state.input);
     }
 
     onParse() {

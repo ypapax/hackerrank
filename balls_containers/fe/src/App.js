@@ -17,7 +17,7 @@ class App extends Component {
         alert(msg);
     }
 
-    matrixChanged(m, cb){
+    matrixChanged(m, cb) {
         debugger;
         let mm = this.state.matrices;
         if (!mm || !mm.length) {
@@ -33,7 +33,7 @@ class App extends Component {
             if (cb) {
                 cb();
             }
-            window.scrollTo(0,document.body.scrollHeight); // scroll to bottom
+            window.scrollTo(0, document.body.scrollHeight); // scroll to bottom
         })
     }
 
@@ -47,7 +47,7 @@ class App extends Component {
                 if (this.hasError(data)) {
                     return;
                 }
-                this.matrixChanged(data[0]/*, this.arrange.bind(this)*/);
+                this.matrixChanged(data[0], this.arrange.bind(this));
             }.bind(this),
             dataType: "json",
             error: function (e) {
@@ -56,7 +56,7 @@ class App extends Component {
         });
     }
 
-    lastMatrix(){
+    lastMatrix() {
         return this.state.matrices[this.state.matrices.length - 1];
     }
 
@@ -104,7 +104,7 @@ class App extends Component {
         });
     }
 
-    hasError(data){
+    hasError(data) {
         if (data.hasOwnProperty("reason")) {
             this.showError(data.reason);
             return data;
