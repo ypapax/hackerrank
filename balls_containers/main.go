@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"flag"
 )
 
 var debug bool
@@ -14,6 +15,15 @@ func init() {
 }
 
 func main() {
+	bind := flag.String("bind", "", "API server listenning for algorithm debug")
+	flag.Parse()
+
+	if len(*bind) > 0 {
+		arrangeAPI(*bind)
+	} else {
+		log.Println("bind option is not specified")
+	}
+
 	mm, err := readMatrices(os.Stdin)
 	if err != nil {
 		log.Println(err)
@@ -21,7 +31,7 @@ func main() {
 	for i, m := range mm {
 		log.Println("matrix", i)
 		printMatrix(m)
-		possible := arrangeMatrix(m, true)
+		_, possible := arrangeMatrix(m, false)
 		if possible {
 			fmt.Println("Possible")
 			continue
@@ -30,9 +40,9 @@ func main() {
 	}
 }
 
-func arrangeMatrix(m [][]int, debug bool) bool {
+func arrangeMatrix(m [][]int, debug bool) ([][]int, bool) {
 	if isArranged(m) {
-		return true
+		return m, true
 	}
 
 	for boxNumber, box := range m {
@@ -45,14 +55,14 @@ func arrangeMatrix(m [][]int, debug bool) bool {
 			swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2, m)
 		}
 		if isArranged(m) {
-			return true
+			return m, true
 		}
 	}
 	arranged := isArranged(m)
 	if !arranged && debug {
 		m = debugArrange(m)
 	}
-	return isArranged(m)
+	return m, isArranged(m)
 }
 
 func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) {
