@@ -1,14 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
+
 	"github.com/golang/glog"
-	"fmt"
-	"bytes"
 )
 
 func arrangeAPI(bindServer string) {
@@ -82,7 +84,8 @@ func sendResp(w http.ResponseWriter, resp *Response) {
 func initCmds() map[string]*apiFunc {
 	return map[string]*apiFunc{
 		"arrange": {Handler: arrangeHandler},
-		"parse": {Handler: parseHandler},
+		"parse":   {Handler: parseHandler},
+		"swap":    {Handler: swapHandler},
 	}
 }
 
@@ -145,4 +148,46 @@ func parseHandler(af apiCmd) (*Response, error) {
 	return &Response{Result: m}, nil
 }
 
+func swapHandler(af apiCmd) (*Response, error) {
+	if len(af.Cmd.Params) < 5 {
+		err := fmt.Errorf("not enough arguments")
+		glog.Info(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	var m [][]int
+	err := json.Unmarshal([]byte(af.Cmd.Params[0]), &m)
+	if err != nil {
+		err := fmt.Errorf("could not parse matrix %+v", err)
+		glog.Error(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	boxNumber, err := strconv.Atoi(af.Cmd.Params[1])
+	if err != nil {
+		err := fmt.Errorf("could not parse int %+v", err)
+		glog.Error(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	ballType, err := strconv.Atoi(af.Cmd.Params[2])
+	if err != nil {
+		err := fmt.Errorf("could not parse int %+v", err)
+		glog.Error(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	targetBoxNumber, err := strconv.Atoi(af.Cmd.Params[3])
+	if err != nil {
+		err := fmt.Errorf("could not parse int %+v", err)
+		glog.Error(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	targetBallType, err := strconv.Atoi(af.Cmd.Params[4])
+	if err != nil {
+		err := fmt.Errorf("could not parse int %+v", err)
+		glog.Error(err)
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
 
+	if err := swapByBoxFromToAndBallNumber(boxNumber, ballType, targetBoxNumber, targetBallType, m); err != nil {
+		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
+	}
+	return &Response{Result: m}, nil
+}

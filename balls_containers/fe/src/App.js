@@ -11,6 +11,10 @@ class App extends Component {
         this.state = {}
     }
 
+    showError(msg) {
+        alert(msg);
+    }
+
     parse(input) {
         $.ajax({
             type: "POST",
@@ -52,6 +56,37 @@ class App extends Component {
         });
     }
 
+    swap(senderRow, senderColumn, targetRow, targetColumn) {
+        $.ajax({
+            type: "POST",
+            url: backend + "/api/v1/swap",
+            data: JSON.stringify({
+                Params: [
+                    JSON.stringify(this.state.matrix),
+                    senderRow.toString(), senderColumn.toString(),
+                    targetRow.toString(), targetColumn.toString()
+                ]
+            }),
+            success: function (data) {
+                console.info("data", data);
+                if (data.hasOwnProperty("reason")) {
+                    this.showError(data.reason);
+                    return;
+                }
+                this.setState({
+                    "matrix": data
+                }, function () {
+                    console.info("new state", this.state);
+                })
+            }.bind(this),
+            dataType: "json",
+            error: function (e) {
+                console.error(e);
+            }
+        });
+    }
+
+
     inputChanged(input) {
         console.info("inputChanged", input);
         this.parse(input);
@@ -59,12 +94,7 @@ class App extends Component {
 
     onDrop(senderRow, senderColumn, targetRow, targetColumn) {
         let m = this.state.matrix;
-        debugger;
-        m[senderRow][senderColumn] = 666;
-        m[targetRow][targetColumn] = 777;
-        this.setState({
-            "matrix": m
-        })
+        this.swap(senderRow, senderColumn, targetRow, targetColumn);
     }
 
     render() {

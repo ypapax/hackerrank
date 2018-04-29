@@ -66,7 +66,7 @@ func arrangeMatrix(m [][]int, debug bool) ([][]int, bool) {
 	return m, isArranged(m)
 }
 
-func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) {
+func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) error {
 	sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2)
 	a1 := m[sw.ballMove1.from.row][sw.ballMove1.from.column]
 	a2 := m[sw.ballMove2.from.row][sw.ballMove2.from.column]
@@ -80,11 +80,12 @@ func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballType
 
 	if sw.amount == 0 {
 		pr("swap amount is 0")
-		return
+		return fmt.Errorf("swap amount is 0")
 	}
 	pr(fmt.Sprintf("before swap %+v", sw))
 	m = swap(m, sw)
 	pr("after swap")
+	return nil
 }
 
 func isArranged(m [][]int) bool {
