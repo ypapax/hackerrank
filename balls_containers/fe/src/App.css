@@ -26,3 +26,13 @@ textarea{
   margin-left: auto;
   margin-right: auto;
 }
+
+.drag {
+  background-color: red;
+  color: white;
+}
+
+.drop {
+  background-color: green;
+  color: white;
+}
