@@ -190,7 +190,10 @@ class App extends Component {
         let mm = this.state.matrices;
         mm[mm.length - 1] = this.state.lastMatrix;
 
-        this.setState({matrices: mm}, function () {
+        this.setState({
+            matrices: mm,
+            lastDragOverRequest: []
+        }, function () {
             cb();
         }.bind(this));
     }

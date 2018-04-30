@@ -28,7 +28,7 @@ textarea{
 }
 
 .drag {
-  background-color: red;
+  background-color: rgba(255, 0, 0, 0.4);
   color: white;
 }
 
