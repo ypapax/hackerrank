@@ -186,8 +186,9 @@ func swapHandler(af apiCmd) (*Response, error) {
 		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
 	}
 
-	if err := swapByBoxFromToAndBallNumber(boxNumber, ballType, targetBoxNumber, targetBallType, m); err != nil {
+	sw, err := swapByBoxFromToAndBallNumber(boxNumber, ballType, targetBoxNumber, targetBallType, m)
+	if err != nil {
 		return &Response{Error: &ErrorResp{Reason: err.Error()}}, nil
 	}
-	return &Response{Result: m}, nil
+	return &Response{Result: map[string]interface{}{"matrix": m, "swap": sw}}, nil
 }

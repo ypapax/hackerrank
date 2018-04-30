@@ -15,7 +15,9 @@ class Cell extends Component {
         var senderRow = ev.dataTransfer.getData("row");
         var senderCol = ev.dataTransfer.getData("column");
         this.props.onDrop(senderRow, senderCol, this.props.row, this.props.column);
-        this.state.dropping = true;
+        this.setState({
+            dropping: true
+        })
     }
 
     dragStart(ev) {

@@ -9,7 +9,8 @@ class App extends Component {
     constructor() {
         super()
         this.state = {
-            matrices: []
+            matrices: [],
+            info:[]
         }
     }
 
@@ -17,8 +18,7 @@ class App extends Component {
         alert(msg);
     }
 
-    matrixChanged(m, cb) {
-        debugger;
+    matrixChanged(m, info, cb) {
         let mm = this.state.matrices;
         if (!mm || !mm.length) {
             mm = [m];
@@ -26,8 +26,12 @@ class App extends Component {
             mm.push(m);
         }
 
+        let infos = this.state.info;
+        infos.push(info)
+
         this.setState({
-            "matrices": mm
+            "matrices": mm,
+            "info": infos
         }, function () {
             console.info("new state", this.state);
             if (cb) {
@@ -47,7 +51,7 @@ class App extends Component {
                 if (this.hasError(data)) {
                     return;
                 }
-                this.matrixChanged(data[0], this.arrange.bind(this));
+                this.matrixChanged(data[0], "parsing", this.arrange.bind(this));
             }.bind(this),
             dataType: "json",
             error: function (e) {
@@ -70,7 +74,7 @@ class App extends Component {
                 if (this.hasError(data)) {
                     return;
                 }
-                this.matrixChanged(data.m);
+                this.matrixChanged(data.m, "arranging");
             }.bind(this),
             dataType: "json",
             error: function (e) {
@@ -95,7 +99,12 @@ class App extends Component {
                 if (this.hasError(data)) {
                     return;
                 }
-                this.matrixChanged(data);
+                let amount = data.swap.Amount;
+                let msg = "from box "+ senderRow +" moved "+amount+" balls of type "+
+                    senderColumn+" to box "+targetRow +
+                    " and moved "+amount+" balls of type "+targetColumn + " from box "+
+                    targetRow +" to box "+senderRow;
+                this.matrixChanged(data.matrix, msg);
             }.bind(this),
             dataType: "json",
             error: function (e) {
@@ -131,6 +140,7 @@ class App extends Component {
                     onArrange={this.arrange.bind(this)}
                     onInputChanged={this.inputChanged.bind(this)}
                     onDrop={this.onDrop.bind(this)}
+                    info={this.state.info}
                 />
             </div>
         );

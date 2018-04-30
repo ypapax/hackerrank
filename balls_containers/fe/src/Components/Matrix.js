@@ -39,6 +39,7 @@ class Matrix extends Component {
         )
         return (
             <div className="matrix">
+                <div className="info">{this.props.info}</div>
                 <table className="table">
                     <tbody>
                         {rows}

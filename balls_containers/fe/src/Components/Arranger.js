@@ -44,6 +44,7 @@ class Arranger extends Component {
                     onDrop={this.props.onDrop.bind(this)}
                     index={index}
                     key={index}
+                    info={this.props.info[index]}
                 />
             );
         });

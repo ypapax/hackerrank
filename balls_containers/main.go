@@ -66,26 +66,26 @@ func arrangeMatrix(m [][]int, debug bool) ([][]int, bool) {
 	return m, isArranged(m)
 }
 
-func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) error {
+func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) (*swapping, error) {
 	sw := newSwapping(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2)
 	a1 := m[sw.ballMove1.from.row][sw.ballMove1.from.column]
 	a2 := m[sw.ballMove2.from.row][sw.ballMove2.from.column]
 	log.Println("box", boxNumber, "contains", a1, "balls of type", ballTypeNumber)
 	log.Println("box", targetBox, "contains", a2, "balls of type", ballTypeNumber2)
-	sw.amount = int(math.Min(float64(a1), float64(a2)))
+	sw.Amount = int(math.Min(float64(a1), float64(a2)))
 	pr := func(msg string) {
 		log.Println(msg)
 		printMatrix(m, sw.ballMove1.from, sw.ballMove1.to, sw.ballMove2.from, sw.ballMove2.to)
 	}
 
-	if sw.amount == 0 {
-		pr("swap amount is 0")
-		return fmt.Errorf("swap amount is 0")
+	if sw.Amount == 0 {
+		pr("swap Amount is 0")
+		return nil, fmt.Errorf("swap Amount is 0")
 	}
 	pr(fmt.Sprintf("before swap %+v", sw))
 	m = swap(m, sw)
 	pr("after swap")
-	return nil
+	return &sw, nil
 }
 
 func isArranged(m [][]int) bool {
@@ -119,9 +119,9 @@ func biggestAmount(m [][]int) int {
 
 func swap(m [][]int, sw swapping) [][]int {
 	for _, bm := range []ballMove{sw.ballMove1, sw.ballMove2} {
-		m[bm.from.row][bm.from.column] -= sw.amount
-		m[bm.to.row][bm.to.column] += sw.amount
-		log.Printf("%+v balls of type %+v had moved from box %+v to box %+v\n", sw.amount, bm.from.column, bm.from.row, bm.to.row)
+		m[bm.from.row][bm.from.column] -= sw.Amount
+		m[bm.to.row][bm.to.column] += sw.Amount
+		log.Printf("%+v balls of type %+v had moved from box %+v to box %+v\n", sw.Amount, bm.from.column, bm.from.row, bm.to.row)
 	}
 	return m
 }
@@ -248,7 +248,7 @@ type ballMove struct {
 
 type swapping struct {
 	ballMove1, ballMove2 ballMove
-	amount               int
+	Amount               int
 }
 
 func newSwapping(box1, ballType1, box2, ballType2 int) swapping {
@@ -259,6 +259,6 @@ func newSwapping(box1, ballType1, box2, ballType2 int) swapping {
 		ballMove2: ballMove{
 			point{box2, ballType2, redBG}, point{box1, ballType2, greenBG},
 		},
-		amount: 1,
+		Amount: 1,
 	}
 }
