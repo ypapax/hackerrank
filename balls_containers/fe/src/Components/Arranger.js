@@ -14,7 +14,7 @@ class Arranger extends Component {
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.inputChanged(this.state.input);
     }
 
@@ -45,6 +45,9 @@ class Arranger extends Component {
                     index={index}
                     key={index}
                     info={this.props.info[index]}
+                    onDragStart={this.props.onDragStart}
+                    onDragOver={this.props.onDragOver}
+                    onDragLeave={this.props.onDragLeave.bind(this)}
                 />
             );
         });

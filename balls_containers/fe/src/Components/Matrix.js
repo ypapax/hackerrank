@@ -21,7 +21,7 @@ class Matrix extends Component {
             return ""
         }
         let rows = this.props.matrix.map((r, rowNumber) => {
-            let matrix=this.props.index;
+            let matrix = this.props.index;
             let key = matrix.toString() + "_" + rowNumber.toString();
             return (
                 <Row
@@ -29,7 +29,10 @@ class Matrix extends Component {
                     row={rowNumber}
                     onDrop={this.props.onDrop.bind(this)}
                     matrix={this.props.index}
-                        key={key}
+                    key={key}
+                    onDragStart={this.props.onDragStart}
+                    onDragOver={this.props.onDragOver}
+                    onDragLeave={this.props.onDragLeave.bind(this)}
                 />
             )
         });
@@ -42,7 +45,7 @@ class Matrix extends Component {
                 <div className="info" dangerouslySetInnerHTML={{__html: this.props.info}}></div>
                 <table className="table">
                     <tbody>
-                        {rows}
+                    {rows}
                     </tbody>
                 </table>
                 {buttons}

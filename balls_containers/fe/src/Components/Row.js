@@ -18,6 +18,9 @@ class Row extends Component {
                 row={this.props.row}
                 onDrop={this.props.onDrop.bind(this)}
                 key={key}
+                onDragStart={this.props.onDragStart}
+                onDragOver={this.props.onDragOver}
+                onDragLeave={this.props.onDragLeave.bind(this)}
             />)
         });
         console.info("cells", cells);

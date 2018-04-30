@@ -6,8 +6,9 @@ class Cell extends Component {
         this.state = {};
     }
 
-    allowDrop(e) {
-        e.preventDefault();
+    dragOver(ev) {
+        ev.preventDefault();
+        this.props.onDragOver(this.props.row, this.props.column);
     }
 
     onDrop(ev) {
@@ -26,6 +27,7 @@ class Cell extends Component {
         this.setState({
             dragging: true
         })
+        this.props.onDragStart(this.props.row, this.props.column);
     }
 
     render() {
@@ -39,7 +41,8 @@ class Cell extends Component {
         return (
             <td className={className} draggable="true" onDrop={this.onDrop.bind(this)}
                 onDragStart={this.dragStart.bind(this)}
-                onDragOver={this.allowDrop.bind(this)}
+                onDragOver={this.dragOver.bind(this)}
+                onDragLeave={this.props.onDragLeave.bind(this)}
             >
                 {this.props.value}
             </td>
