@@ -10,7 +10,7 @@ class App extends Component {
         super()
         this.state = {
             matrices: [],
-            info:[]
+            info: []
         }
     }
 
@@ -100,10 +100,9 @@ class App extends Component {
                     return;
                 }
                 let amount = data.swap.Amount;
-                let msg = "from box "+ senderRow +" moved "+amount+" balls of type "+
-                    senderColumn+" to box "+targetRow +
-                    " and moved "+amount+" balls of type "+targetColumn + " from box "+
-                    targetRow +" to box "+senderRow;
+                let msg1 = "moved " + amount + " balls of type " + senderColumn + " from box " + senderRow + " to box " + targetRow;
+                let msg2 = "moved " + amount + " balls of type " + targetColumn + " from box " + targetRow + " to box " + senderRow;
+                let msg = msg1 + "<br/>" + msg2;
                 this.matrixChanged(data.matrix, msg);
             }.bind(this),
             dataType: "json",
