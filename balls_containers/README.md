@@ -12,18 +12,21 @@ Impossible
 $ go test -v
 === RUN   TestArrangeMatrix
 === RUN   TestArrangeMatrix/testpossible.txt
-2018/04/27 11:34:25 main.go:57: container 0 has different types of balls
-2018/04/27 11:34:25 main.go:57: container 1 has different types of balls
 === RUN   TestArrangeMatrix/testimpossible.txt
-2018/04/27 11:34:25 main.go:57: container 1 has different types of balls
-2018/04/27 11:34:25 main.go:57: container 1 has different types of balls
-2018/04/27 11:34:25 main.go:57: container 0 has different types of balls
-2018/04/27 11:34:25 main.go:57: container 0 has different types of balls
---- PASS: TestArrangeMatrix (0.00s)
+=== RUN   TestArrangeMatrix/test2_big.txt
+=== RUN   TestArrangeMatrix/test4_big.txt
+=== RUN   TestArrangeMatrix/testpossible4.txt
+=== RUN   TestArrangeMatrix/testpossible100.txt
+--- PASS: TestArrangeMatrix (0.01s)
     --- PASS: TestArrangeMatrix/testpossible.txt (0.00s)
     --- PASS: TestArrangeMatrix/testimpossible.txt (0.00s)
-PASS
+    --- PASS: TestArrangeMatrix/test2_big.txt (0.00s)
+    --- PASS: TestArrangeMatrix/test4_big.txt (0.00s)
+    --- PASS: TestArrangeMatrix/testpossible4.txt (0.00s)
+    --- PASS: TestArrangeMatrix/testpossible100.txt (0.00s)
 ok  	github.com/ypapax/hackerrank/balls_containers	0.013s
 
+PASS
+ok  	github.com/ypapax/hackerrank/balls_containers	0.016s
 
 ```
