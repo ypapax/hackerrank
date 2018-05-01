@@ -1,12 +1,18 @@
 package com.mycompany.app;
 
+import org.apache.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
-
 public class App 
 {
+    static Logger logger = Logger.getLogger(App.class);
+
     public static void main(String[] args) {
+        System.out.println("getLocation");
+        System.out.println(App.class.getProtectionDomain().getCodeSource().getLocation());
+        logger.info("INFO2");
         Scanner sc = new Scanner(System.in);
 
         int q = sc.nextInt();
