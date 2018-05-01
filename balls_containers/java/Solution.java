@@ -6,6 +6,7 @@ public class Solution {
 		Scanner sc = new Scanner(System.in);
 
 		int q = sc.nextInt();
+		System.out.printf("q %+d\n", q);
 		for (int tc = 0; tc < q; tc++) {
 			int n = sc.nextInt();
 			int[][] M = new int[n][n];
