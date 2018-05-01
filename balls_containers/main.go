@@ -7,6 +7,8 @@ import (
 	"os"
 	"flag"
 	"io"
+	"sort"
+	"reflect"
 )
 
 var debug bool
@@ -42,28 +44,22 @@ func main() {
 }
 
 func arrangeMatrix(m [][]int, debug bool) ([][]int, bool) {
-	if isArranged(m) {
-		return m, true
+	var rowSum, colSum = make([]int, len(m)), make([]int, len(m))
+
+	for ri, r := range m {
+		for ci  := range r {
+			rowSum[ri] += m[ri][ci]
+			colSum[ci] += m[ri][ci]
+		}
 	}
 
-	for boxNumber, box := range m {
-		for ballTypeNumber := range box {
-			if boxNumber == ballTypeNumber {
-				continue
-			}
-			targetBox := ballTypeNumber
-			ballTypeNumber2 := boxNumber
-			swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2, m)
-		}
-		if isArranged(m) {
-			return m, true
-		}
-	}
-	arranged := isArranged(m)
-	if !arranged && debug {
-		m = debugArrange(m)
-	}
-	return m, isArranged(m)
+	return m, isSame(rowSum, colSum)
+}
+
+func isSame(a, b []int) bool {
+	sort.Ints(a)
+	sort.Ints(b)
+	return reflect.DeepEqual(a, b)
 }
 
 func swapByBoxFromToAndBallNumber(boxNumber, ballTypeNumber, targetBox, ballTypeNumber2 int, m [][]int) (*swapping, error) {
