@@ -13,35 +13,49 @@ import (
 // Complete the climbingLeaderboard function below.
 func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 	var ranks = make([]int32, len(alice))
-	for i, aliceScore := range alice {
-		ranks[i] = getRank(scores, aliceScore)
+	var index int
+	var currentRank int32 = 1
+	for i := len(alice) - 1; i >= 0; i-- {
+		aliceScore := alice[i]
+		ranks[i], index = getRank(currentRank, scores, aliceScore)
+		if aliceScore < scores[0] {
+			for {
+				if scores[0] == scores[1] {
+					scores = scores[1:]
+					//index++
+					continue
+				}
+				break
+			}
+			scores = scores[index:]
+			currentRank = ranks[i]
+		}
 	}
 	return ranks
 }
 
-func getRank(scores []int32, aliceScore int32) int32 {
-	var currentRank int32 = 1
+func getRank(currentRank int32, scores []int32, aliceScore int32) (rank int32, rankIndex int) {
 
 	for i, sc := range scores {
 		//log.Printf("currentRank %+v", currentRank)
 		//log.Printf("score %+v for %+v", sc, i)
 		if i == 0 && aliceScore > sc {
-			return 1
+			return 1, i
 		}
 		if aliceScore == sc {
-			return currentRank
+			return currentRank, i
 		}
 		if i >= len(scores)-1 {
 			break
 		}
 		if scores[i] > aliceScore && aliceScore > scores[i+1] {
-			return currentRank + 1
+			return currentRank + 1, i
 		}
 		if scores[i] != scores[i+1] {
 			currentRank++
 		}
 	}
-	return currentRank + 1
+	return currentRank + 1, len(scores) - 1
 }
 
 func getInputArrays(reader *bufio.Reader) ([]int32, []int32, error) {

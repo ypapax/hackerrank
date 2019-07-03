@@ -1,0 +1,10 @@
+when it's n * m complexity:
+
+ go test -v -run Test2000
+2019/07/03 15:18:10 main_test.go:100: TestMain
+=== RUN   Test2000
+2019/07/03 15:18:10 main.go:70: count 200000
+2019/07/03 15:18:10 main.go:70: count 100000
+--- PASS: Test2000 (15.20s)
+PASS
+ok  	github.com/ypapax/hackerrank/climbing-the-leaderboard	15.211s

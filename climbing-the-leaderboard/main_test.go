@@ -12,14 +12,14 @@ import (
 
 func TestRank(t *testing.T) {
 	as := assert.New(t)
-	act := getRank([]int32{100, 90, 90, 80, 75, 60}, 50)
+	act, _ := getRank(1, []int32{100, 90, 90, 80, 75, 60}, 50)
 	exp := int32(6)
 	as.Equal(exp, act)
 }
 
 func TestRank2(t *testing.T) {
 	as := assert.New(t)
-	act := getRank([]int32{100, 100, 50, 40, 40, 20, 10}, 25)
+	act, _ := getRank(1, []int32{100, 100, 50, 40, 40, 20, 10}, 25)
 	exp := int32(4)
 	as.Equal(exp, act)
 }
