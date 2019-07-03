@@ -12,7 +12,6 @@ import (
 
 // Complete the climbingLeaderboard function below.
 func climbingLeaderboard(scores []int32, alice []int32) []int32 {
-	log.Println("alice", alice)
 	var ranks = make([]int32, len(alice))
 	for i, aliceScore := range alice {
 		ranks[i] = getRank(scores, aliceScore)
@@ -24,8 +23,8 @@ func getRank(scores []int32, aliceScore int32) int32 {
 	var currentRank int32 = 1
 
 	for i, sc := range scores {
-		log.Printf("currentRank %+v", currentRank)
-		log.Printf("score %+v for %+v", sc, i)
+		//log.Printf("currentRank %+v", currentRank)
+		//log.Printf("score %+v for %+v", sc, i)
 		if i == 0 && aliceScore > sc {
 			return 1
 		}
@@ -45,6 +44,50 @@ func getRank(scores []int32, aliceScore int32) int32 {
 	return currentRank + 1
 }
 
+func getInputArrays(reader *bufio.Reader) ([]int32, []int32, error) {
+	scores, err := getInputArr(reader)
+	if err != nil {
+		log.Println("error: ", err)
+		return nil, nil, err
+	}
+
+	alice, err := getInputArr(reader)
+	if err != nil {
+		log.Println("error: ", err)
+		return nil, nil, err
+	}
+
+	return scores, alice, nil
+}
+
+func getInputArr(reader *bufio.Reader) ([]int32, error) {
+	count, err := strconv.ParseInt(readLine(reader), 10, 64)
+	if err != nil {
+		log.Println("error: ", err)
+		return nil, err
+	}
+
+	log.Println("count", count)
+	line := readLine(reader)
+	temp := strings.Split(line, " ")
+	if len(temp) != int(count) {
+		err := fmt.Errorf("amount of values %+v doesn't equal to count %+v", len(temp), count)
+		log.Println("error: ", err)
+		return nil, err
+	}
+	var arr []int32
+	for i := 0; i < int(count); i++ {
+		scoresItemTemp, err := strconv.ParseInt(temp[i], 10, 64)
+		if err != nil {
+			log.Println("error: ", err)
+			return nil, err
+		}
+		scoresItem := int32(scoresItemTemp)
+		arr = append(arr, scoresItem)
+	}
+	return arr, nil
+}
+
 func main() {
 	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
 
@@ -55,34 +98,11 @@ func main() {
 
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	scoresCount, err := strconv.ParseInt(readLine(reader), 10, 64)
-	checkError(err)
-
-	scoresTemp := strings.Split(readLine(reader), " ")
-
-	var scores []int32
-
-	for i := 0; i < int(scoresCount); i++ {
-		scoresItemTemp, err := strconv.ParseInt(scoresTemp[i], 10, 64)
-		checkError(err)
-		scoresItem := int32(scoresItemTemp)
-		scores = append(scores, scoresItem)
+	scores, alice, err := getInputArrays(reader)
+	if err != nil {
+		log.Println("error: ", err)
+		return
 	}
-
-	aliceCount, err := strconv.ParseInt(readLine(reader), 10, 64)
-	checkError(err)
-
-	aliceTemp := strings.Split(readLine(reader), " ")
-
-	var alice []int32
-
-	for i := 0; i < int(aliceCount); i++ {
-		aliceItemTemp, err := strconv.ParseInt(aliceTemp[i], 10, 64)
-		checkError(err)
-		aliceItem := int32(aliceItemTemp)
-		alice = append(alice, aliceItem)
-	}
-
 	result := climbingLeaderboard(scores, alice)
 
 	for i, resultItem := range result {
@@ -99,12 +119,19 @@ func main() {
 }
 
 func readLine(reader *bufio.Reader) string {
-	str, _, err := reader.ReadLine()
-	if err == io.EOF {
-		return ""
+	var resultLine string
+	for {
+		str, isPrefix, err := reader.ReadLine()
+		if err == io.EOF {
+			return ""
+		}
+		resultLine += string(str)
+		if !isPrefix {
+			break
+		}
 	}
 
-	return strings.TrimRight(string(str), "\r\n")
+	return strings.TrimRight(resultLine, "\r\n")
 }
 
 func checkError(err error) {
