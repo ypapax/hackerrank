@@ -14,43 +14,35 @@ import (
 func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 	log.Println("alice", alice)
 	var ranks = make([]int32, len(alice))
+	for i, aliceScore := range alice {
+		ranks[i] = getRank(scores, aliceScore)
+	}
+	return ranks
+}
+
+func getRank(scores []int32, aliceScore int32) int32 {
 	var currentRank int32 = 1
+
 	for i, sc := range scores {
+		log.Printf("currentRank %+v", currentRank)
 		log.Printf("score %+v for %+v", sc, i)
-		for j, a := range alice {
-			if ranks[j] > 0 {
-				log.Printf("rank %+v for %+v is already set", ranks[j], j)
-				continue
-			}
-			if i == 0 && a > sc {
-				ranks[j] = 1
-			}
-			if a == sc {
-				log.Printf("setting rank %+v, for alice %+v\n", currentRank, alice[j])
-				ranks[j] = currentRank + 1
-			}
-			if i >= len(scores)-1 {
-				continue
-			}
-			if scores[i] > a && a > scores[i+1] {
-				ranks[j] = currentRank + 2
-				log.Printf("setting rank %+v, for alice %+v\n", currentRank+1, alice[j])
-			}
+		if i == 0 && aliceScore > sc {
+			return 1
 		}
-		if i == 0 {
-			continue
+		if aliceScore == sc {
+			return currentRank
 		}
-		if scores[i-1] != scores[i] {
+		if i >= len(scores)-1 {
+			break
+		}
+		if scores[i] > aliceScore && aliceScore > scores[i+1] {
+			return currentRank + 1
+		}
+		if scores[i] != scores[i+1] {
 			currentRank++
 		}
 	}
-	for k, a := range ranks {
-		if a != 0 {
-			continue
-		}
-		ranks[k] = currentRank + 1
-	}
-	return ranks
+	return currentRank + 1
 }
 
 func main() {

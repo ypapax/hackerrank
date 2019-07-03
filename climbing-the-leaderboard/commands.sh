@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 test(){
-	GO111MODULE=off go test -v
+	GO111MODULE=off go test -v $@
 }
 
 $@
