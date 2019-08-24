@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-const workers = 10
+const workers = 1
 
 type task struct {
 	index      int

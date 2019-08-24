@@ -13,18 +13,31 @@ import (
 
 func TestRank(t *testing.T) {
 	type testCase struct {
-		inp        []int32
+		scores     []int32
+		inpFile    string
 		aliceScore int32
 		expRank    int32
 	}
 	cases := []testCase{
-		//{inp: []int32{100, 90, 90, 80, 75, 60}, aliceScore: 50, expRank: 6},
-		{inp: []int32{100, 100, 50, 40, 40, 20, 10}, aliceScore: 25, expRank: 4},
+		{scores: []int32{100, 90, 90, 80, 75, 60}, aliceScore: 50, expRank: 6},
+		{scores: []int32{100, 100, 50, 40, 40, 20, 10}, aliceScore: 25, expRank: 4},
+		{inpFile: "./test2000.txt", aliceScore: 5090, expRank: 199975},
 	}
 	for _, c := range cases {
 		t.Run(fmt.Sprintf("%d-%d", c.aliceScore, c.expRank), func(t *testing.T) {
 			as := assert.New(t)
-			a := getRank(c.inp, getRanks(c.inp), c.aliceScore)
+			if len(c.inpFile) > 0 {
+				f, err := os.Open("./test2000.txt")
+				if !as.NoError(err) {
+					return
+				}
+				scores, _, err := getInputArrays(bufio.NewReader(f))
+				if !as.NoError(err) {
+					return
+				}
+				c.scores = scores
+			}
+			a := getRank(c.scores, getRanks(c.scores), c.aliceScore)
 			if !as.Equal(c.expRank, a) {
 				return
 			}
