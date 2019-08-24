@@ -8,8 +8,16 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
+
+const workers = 10
+
+type task struct {
+	index      int
+	aliceScore int32
+}
 
 // Complete the climbingLeaderboard function below.
 func climbingLeaderboard(scores []int32, alice []int32) []int32 {
@@ -18,11 +26,33 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 		log.Printf("climbingLeaderboard for scores len: %+v: %s", len(scores), time.Since(t1))
 	}()
 	ranks := getRanks(scores)
+	var resultMtx sync.Mutex
 	var result = make([]int32, len(alice))
-
-	for i, a := range alice {
-		result[i] = getRank(scores, ranks, a)
+	var tasks = make(chan task)
+	wg := sync.WaitGroup{}
+	wg.Add(len(alice))
+	go func() {
+		for i, a := range alice {
+			tasks <- task{index: i, aliceScore: a}
+		}
+	}()
+	for i := 0; i < workers; i++ {
+		go func() {
+			for {
+				t, ok := <-tasks
+				if !ok {
+					return
+				}
+				r := getRank(scores, ranks, t.aliceScore)
+				resultMtx.Lock()
+				result[t.index] = r
+				resultMtx.Unlock()
+				wg.Done()
+			}
+		}()
 	}
+	wg.Wait()
+	close(tasks)
 	return result
 }
 
