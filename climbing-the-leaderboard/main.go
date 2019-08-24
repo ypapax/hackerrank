@@ -8,28 +8,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Complete the climbingLeaderboard function below.
 func climbingLeaderboard(scores []int32, alice []int32) []int32 {
+	t1 := time.Now()
+	defer func() {
+		log.Printf("climbingLeaderboard for scores len: %+v: %s", len(scores), time.Since(t1))
+	}()
 	ranks := getRanks(scores)
 	var result = make([]int32, len(alice))
-	/*for i := len(alice) - 1; i >= 0; i-- {
-		target := alice[i]
-		ranks[i], index = getRank(currentRank, scores, target)
-		if target < scores[0] {
-			for {
-				if scores[0] == scores[1] {
-					scores = scores[1:]
-					//index++
-					continue
-				}
-				break
-			}
-			scores = scores[index:]
-			currentRank = ranks[i]
-		}
-	}*/
 
 	for i, a := range alice {
 		result[i] = getRank(scores, ranks, a)
@@ -38,6 +27,10 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 }
 
 func getRanks(scores []int32) []int32 {
+	t1 := time.Now()
+	defer func() {
+		log.Printf("getRanks for scores len: %+v: %s", len(scores), time.Since(t1))
+	}()
 	if len(scores) == 0 {
 		return nil
 	}
@@ -57,6 +50,10 @@ func getRanks(scores []int32) []int32 {
 }
 
 func getRank(scores, ranks []int32, aliceScore int32) int32 {
+	t1 := time.Now()
+	defer func() {
+		log.Printf("getRank for scores len: %+v and aliceScore %+v: %s", len(scores), aliceScore, time.Since(t1))
+	}()
 	if aliceScore >= scores[0] {
 		return 1
 	}

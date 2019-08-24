@@ -100,8 +100,8 @@ func Test2000(t *testing.T) {
 	if !as.NoError(err) {
 		return
 	}
-	t.Log("exp", exp)
-	t.Log("act", act)
+	//t.Log("exp", exp)
+	//t.Log("act", act)
 	t.Log("len exp", len(exp))
 	t.Log("len act", len(act))
 	if !as.Equal(exp, act) {
