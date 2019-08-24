@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -11,26 +12,66 @@ import (
 )
 
 func TestRank(t *testing.T) {
-	as := assert.New(t)
-	inp := []int32{100, 90, 90, 80, 75, 60}
-	act, _ := getRank(0, len(inp)-1, toScoresRank(inp), 50)
-	exp := int32(6)
-	as.Equal(exp, act)
+	type testCase struct {
+		inp        []int32
+		aliceScore int32
+		expRank    int32
+	}
+	cases := []testCase{
+		//{inp: []int32{100, 90, 90, 80, 75, 60}, aliceScore: 50, expRank: 6},
+		{inp: []int32{100, 100, 50, 40, 40, 20, 10}, aliceScore: 25, expRank: 4},
+	}
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%d-%d", c.aliceScore, c.expRank), func(t *testing.T) {
+			as := assert.New(t)
+			a := getRank(c.inp, getRanks(c.inp), c.aliceScore)
+			if !as.Equal(c.expRank, a) {
+				return
+			}
+		})
+	}
 }
 
-func TestRank2(t *testing.T) {
-	as := assert.New(t)
-	inp := []int32{100, 100, 50, 40, 40, 20, 10}
-	act, _ := getRank(0, len(inp), toScoresRank(inp), 25)
-	exp := int32(4)
-	as.Equal(exp, act)
+func TestBinarySearch(t *testing.T) {
+	type testCase struct {
+		inp           []int32
+		target        int32
+		expectedIndex int
+	}
+	cases := []testCase{
+		{inp: []int32{100, 90, 90, 80, 75, 60}, target: 50, expectedIndex: 5},
+		{inp: []int32{100, 90, 90, 80, 75, 60}, target: 100, expectedIndex: 0},
+		{inp: []int32{100, 90, 80, 75, 60}, target: 90, expectedIndex: 1},
+	}
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%d-%d", c.target, c.expectedIndex), func(t *testing.T) {
+			as := assert.New(t)
+			a := binarySearch(c.inp, len(c.inp)-1, 0, c.target)
+			if !as.Equal(c.expectedIndex, a) {
+				return
+			}
+		})
+	}
 }
 
 func TestClimbingLeaderboard(t *testing.T) {
-	as := assert.New(t)
-	act := climbingLeaderboard([]int32{100, 90, 90, 80, 75, 60}, []int32{50, 65, 77, 90, 102})
-	exp := []int32{6, 5, 4, 2, 1}
-	as.Equal(exp, act)
+	type testCase struct {
+		scores        []int32
+		alice         []int32
+		expAliceRanks []int32
+	}
+	var testCases = []testCase{
+		{scores: []int32{100, 90, 90, 80, 75, 60}, alice: []int32{50, 65, 77, 90, 102}, expAliceRanks: []int32{6, 5, 4, 2, 1}},
+	}
+	for _, c := range testCases {
+		t.Run(fmt.Sprintf("%+v %+v", c.scores, c.alice), func(t *testing.T) {
+			as := assert.New(t)
+			act := climbingLeaderboard(c.scores, c.alice)
+			if !as.Equal(c.expAliceRanks, act) {
+				return
+			}
+		})
+	}
 }
 
 func TestClimbingLeaderboard2(t *testing.T) {

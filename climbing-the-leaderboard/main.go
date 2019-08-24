@@ -12,14 +12,12 @@ import (
 
 // Complete the climbingLeaderboard function below.
 func climbingLeaderboard(scores []int32, alice []int32) []int32 {
-	var ranks = make([]int32, len(alice))
-
-	scoreRanks := toScoresRank(scores)
-
+	ranks := getRanks(scores)
+	var result = make([]int32, len(alice))
 	/*for i := len(alice) - 1; i >= 0; i-- {
-		aliceScore := alice[i]
-		ranks[i], index = getRank(currentRank, scores, aliceScore)
-		if aliceScore < scores[0] {
+		target := alice[i]
+		ranks[i], index = getRank(currentRank, scores, target)
+		if target < scores[0] {
 			for {
 				if scores[0] == scores[1] {
 					scores = scores[1:]
@@ -34,66 +32,73 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 	}*/
 
 	for i, a := range alice {
-		ranks[i], _ = getRank(0, len(scores)-1, scoreRanks, a)
+		result[i] = getRank(scores, ranks, a)
 	}
-	return ranks
+	return result
 }
 
-func toScoresRank(scores []int32) []scoreRank {
-	var scoreRanks []scoreRank
-
-	var rank int
+func getRanks(scores []int32) []int32 {
+	if len(scores) == 0 {
+		return nil
+	}
+	var rank = make([]int32, len(scores))
+	rank[0] = 1
 	for i, sc := range scores {
-		if i != 0 && scores[i-1] == sc {
+		if i == 0 {
 			continue
 		}
-		rank++
-		scoreRanks = append(scoreRanks, scoreRank{score: sc, rank: rank})
+		if sc == scores[i-1] {
+			rank[i] = rank[i-1]
+			continue
+		}
+		rank[i] = rank[i-1] + 1
 	}
-	return scoreRanks
+	return rank
 }
 
-type scoreRank struct {
-	score int32
-	rank  int
+func getRank(scores, ranks []int32, aliceScore int32) int32 {
+	if aliceScore >= scores[0] {
+		return 1
+	}
+	lastScore := scores[len(scores)-1]
+	if lastScore > aliceScore {
+		lastRank := ranks[len(ranks)-1]
+		return lastRank + 1
+	}
+	leftIndex := binarySearch(scores, len(scores)-1, 0, aliceScore)
+	if scores[leftIndex] == aliceScore {
+		return ranks[leftIndex]
+	}
+	return ranks[leftIndex] + 1
 }
 
-func (sr *scoreRank) String() string {
-	return fmt.Sprintf("%+v,%+v", sr.rank, sr.score)
-}
-
-func getRank(low, high int, scores []scoreRank, target int32) (rank int32, rankIndex int) {
-	if low > high {
-		return -1, -1
+func binarySearch(scores []int32, low, high int, target int32) int {
+	if high > low {
+		return -1
 	}
-	if low == high && low >= len(scores)-1 {
-		return int32(scores[len(scores)-1].rank + 1), len(scores)
+	if scores[0] == target {
+		return 0
 	}
-	mid := (low + high) / 2
-	if mid < 0 {
-		panic("mid is negative")
+	last := scores[len(scores)-1]
+	if last >= target {
+		return len(scores) - 1
 	}
-	if mid >= len(scores) {
-		return int32(scores[len(scores)-1].rank + 1), len(scores)
+	if scores[len(scores)-1] == target {
+		return len(scores) - 1
 	}
-	if scores[mid].score == target {
-		return int32(scores[mid].rank), mid
+	mid := low + high/2
+	if scores[mid] == target {
+		return mid
 	}
-	if scores[mid].score > target {
-		return getRank(mid+1, high, scores, target)
+	if scores[mid-1] > target && target > scores[mid] {
+		return mid - 1
 	}
-
-	prev := mid - 1
-	if prev == 0 {
-		return 1, 0
+	if scores[mid] > target {
+		high = mid + 1
+		return binarySearch(scores, low, high, target)
 	}
-	if prev < 0 {
-		return 1, -1
-	}
-	if scores[prev].score > target {
-		return int32(scores[mid].rank), mid
-	}
-	return getRank(low, mid-1, scores, target)
+	low = mid - 1
+	return binarySearch(scores, low, high, target)
 }
 
 func getInputArrays(reader *bufio.Reader) ([]int32, []int32, error) {
