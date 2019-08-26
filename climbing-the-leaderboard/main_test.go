@@ -37,7 +37,7 @@ func TestRank(t *testing.T) {
 				}
 				c.scores = scores
 			}
-			_, a := getRank(c.scores, getRanks(c.scores), c.aliceScore, len(c.scores)-1)
+			_, a := getRank(c.scores, getRanks(c.scores), c.aliceScore)
 			if !as.Equal(c.expRank, a) {
 				return
 			}

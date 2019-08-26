@@ -36,7 +36,6 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 			tasks <- task{index: i, aliceScore: a}
 		}
 	}()
-	var lo = len(scores) - 1
 	for i := 0; i < workers; i++ {
 		go func() {
 			for {
@@ -44,12 +43,11 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 				if !ok {
 					return
 				}
-				i, r := getRank(scores, ranks, t.aliceScore, lo)
+				i, r := getRank(scores, ranks, t.aliceScore)
 				resultMtx.Lock()
 				if i+2 <= len(scores)-1 {
 					scores = scores[:i+2]
 				}
-				//lo = i + 1
 				result[t.index] = r
 				resultMtx.Unlock()
 				wg.Done()
@@ -84,7 +82,7 @@ func getRanks(scores []int32) []int32 {
 	return rank
 }
 
-func getRank(scores, ranks []int32, aliceScore int32, lo int) (int, int32) {
+func getRank(scores, ranks []int32, aliceScore int32) (int, int32) {
 	/*	t1 := time.Now()
 		defer func() {
 			log.Printf("getRank for scores len: %+v and aliceScore %+v: %s", len(scores), aliceScore, time.Since(t1))
@@ -99,7 +97,7 @@ func getRank(scores, ranks []int32, aliceScore int32, lo int) (int, int32) {
 	}
 	leftIndex := binarySearch(scores, len(scores)-1, 0, aliceScore)
 	if leftIndex < 0 || leftIndex >= len(scores) {
-		err := fmt.Errorf("not correct index %+v for scores with length %+v and lo %+v", leftIndex, len(scores), lo)
+		err := fmt.Errorf("not correct index %+v for scores with length %+v", leftIndex, len(scores))
 		panic(err)
 	}
 	if scores[leftIndex] == aliceScore {
