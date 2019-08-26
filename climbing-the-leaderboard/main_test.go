@@ -37,7 +37,7 @@ func TestRank(t *testing.T) {
 				}
 				c.scores = scores
 			}
-			a := getRank(c.scores, getRanks(c.scores), c.aliceScore)
+			_, a := getRank(c.scores, getRanks(c.scores), c.aliceScore, len(c.scores)-1)
 			if !as.Equal(c.expRank, a) {
 				return
 			}
@@ -118,6 +118,13 @@ func Test2000(t *testing.T) {
 	t.Log("len exp", len(exp))
 	t.Log("len act", len(act))
 	if !as.Equal(exp, act) {
+		for i, a := range act {
+			e := exp[i]
+			if a != e {
+				t.Errorf("actual element number %+v is %+v which is not equal to expected %+v for alice score %+v", i, a, e, alice[i])
+				return
+			}
+		}
 		return
 	}
 
@@ -158,5 +165,7 @@ func TestGetInputArr(t *testing.T) {
 func TestMain(m *testing.M) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("TestMain")
-	os.Exit(m.Run())
+	ret := m.Run()
+	//log.Printf("binarySearchCalls: %+v", binarySearchCalls)
+	os.Exit(ret)
 }

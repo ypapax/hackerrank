@@ -36,6 +36,7 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 			tasks <- task{index: i, aliceScore: a}
 		}
 	}()
+	var lo = len(scores) - 1
 	for i := 0; i < workers; i++ {
 		go func() {
 			for {
@@ -43,8 +44,12 @@ func climbingLeaderboard(scores []int32, alice []int32) []int32 {
 				if !ok {
 					return
 				}
-				r := getRank(scores, ranks, t.aliceScore)
+				i, r := getRank(scores, ranks, t.aliceScore, lo)
 				resultMtx.Lock()
+				if i+2 <= len(scores)-1 {
+					scores = scores[:i+2]
+				}
+				//lo = i + 1
 				result[t.index] = r
 				resultMtx.Unlock()
 				wg.Done()
@@ -79,28 +84,39 @@ func getRanks(scores []int32) []int32 {
 	return rank
 }
 
-func getRank(scores, ranks []int32, aliceScore int32) int32 {
-	t1 := time.Now()
-	defer func() {
-		log.Printf("getRank for scores len: %+v and aliceScore %+v: %s", len(scores), aliceScore, time.Since(t1))
-	}()
+func getRank(scores, ranks []int32, aliceScore int32, lo int) (int, int32) {
+	/*	t1 := time.Now()
+		defer func() {
+			log.Printf("getRank for scores len: %+v and aliceScore %+v: %s", len(scores), aliceScore, time.Since(t1))
+		}()*/
 	if aliceScore >= scores[0] {
-		return 1
+		return 0, 1
 	}
 	lastScore := scores[len(scores)-1]
 	if lastScore > aliceScore {
 		lastRank := ranks[len(ranks)-1]
-		return lastRank + 1
+		return len(ranks) - 1, lastRank + 1
 	}
 	leftIndex := binarySearch(scores, len(scores)-1, 0, aliceScore)
-	if scores[leftIndex] == aliceScore {
-		return ranks[leftIndex]
+	if leftIndex < 0 || leftIndex >= len(scores) {
+		err := fmt.Errorf("not correct index %+v for scores with length %+v and lo %+v", leftIndex, len(scores), lo)
+		panic(err)
 	}
-	return ranks[leftIndex] + 1
+	if scores[leftIndex] == aliceScore {
+		return leftIndex, ranks[leftIndex]
+	}
+	return leftIndex, ranks[leftIndex] + 1
 }
 
+var binarySearchCallsMtx = sync.Mutex{}
+var binarySearchCalls = make(map[int32]int)
+
 func binarySearch(scores []int32, low, high int, target int32) int {
+	/*binarySearchCallsMtx.Lock()
+	binarySearchCalls[target]++
+	binarySearchCallsMtx.Unlock()*/
 	if high > low {
+		log.Printf("high %+v is greater than lo %+v for scores len %+v and target %+v", high, low, target, len(scores))
 		return -1
 	}
 	if scores[0] == target {
